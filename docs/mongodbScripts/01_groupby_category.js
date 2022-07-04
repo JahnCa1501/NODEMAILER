@@ -1,3 +1,7 @@
+//AGRUPAMIENTO
+//$match es el filtro de busqueda
+//$group es agrupar los resultados del match en un array
+
 var aggregatePipeline = [
   {$match: {
     $or: [{type:'EXPENSE'}, {type:'INCOME'}]

@@ -4,9 +4,11 @@ const Usuario = require('../../../../libs/usuarios');
 const UsuarioDao = require('../../../../dao/mongodb/models/UsuarioDao');
 const userDao = new UsuarioDao();
 const user = new Usuario(userDao);
+const nodemailer = require('nodemailer');
 user.init();
 
 const {jwtSign} = require('../../../../libs/security');
+const { application } = require('express');
 
 router.post('/login', async (req, res)=>{
   try {
@@ -54,5 +56,65 @@ router.post('/signin', async (req, res) => {
     return res.status(502).json({ error: 'Error al procesar solicitud' });
   }
 });
+
+// OLVIDO CONTRASEÑA Y SE MANDA UNA TEMPORAL, USO DE NODEMAILER
+router.post('/forgotPassword', (req, res) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false,
+    auth: {
+      user: 'hhahzcnwsestkbog@ethereal.email',
+      pass: 'dQwu35NcMQ5vpaA5WT'
+    },
+  });
+
+  var mailOptions = {
+    from: "Remitente",
+    to: "jahnca1501@gmail.com",
+    subject: "Nueva contraseña temporal",
+    text: "Su nueva contraseña temporal es:  " + generatePasswordRand(8),
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      res.status(500).send(error.message);
+    } else {
+      console.log("Email enviado");
+      res.status(200).jsonp(req.body);
+    }
+  });
+});
+
+router.patch("/reset", (req, res) => {
+
+})
+
+// FUNCION PARA GENERAR CONTRASEÑA ALEATORIA
+function generatePasswordRand(length,type) {
+  switch(type){
+      case 'num':
+          characters = "0123456789";
+          break;
+      case 'alf':
+          characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          break;
+      case 'rand':
+          //FOR ↓
+          break;
+      default:
+          characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+          break;
+  }
+  var pass = "";
+  for (i=0; i < length; i++){
+      if(type == 'rand'){
+          pass += String.fromCharCode((Math.floor((Math.random() * 100)) % 94) + 33);
+      }else{
+          pass += characters.charAt(Math.floor(Math.random()*characters.length));   
+      }
+  }
+  return pass;
+}
 
 module.exports = router;

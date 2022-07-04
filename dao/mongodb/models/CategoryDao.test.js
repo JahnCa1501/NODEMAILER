@@ -14,7 +14,7 @@ describe("Testing Categoria Crud in MongoDB", () => {
     jest.resetModules();
     process.env = {
       ...env,
-      MONGODB_URI: "mongodb+srv://ochenta_user:kfrbltXGvt2KZH4Q@cojba.nzup0.mongodb.net/?retryWrites=true&w=majority",
+      MONGODB_URI: "mongodb+srv://jcnajera:Olancho123@mycluster.1djzzq5.mongodb.net/test",
       MONGODB_DB: "sw202202_test",
       MONGODB_SETUP: 1,
     };
